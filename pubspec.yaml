@@ -13,13 +13,16 @@ dependencies:
   google_fonts: ^6.2.1
   fl_chart: ^0.70.2
   provider: ^6.1.2
-  intl: ^0.20.2
+  intl: ^0.17.0
   lottie: ^3.1.2
-  tflite_flutter: ^0.10.4
   firebase_core: ^4.7.0
   firebase_auth: ^6.4.0
   cloud_firestore: ^6.3.0
   google_sign_in: ^7.2.0
+  tflite_flutter: ^0.10.4
+  csv: ^5.1.1
+  get: ^4.6.6
+  charts_flutter: ^0.12.0
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +31,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/models/best_acute_risk_model.tflite
+    - assets/models/best_chronic_risk_model.tflite
+    - assets/data/
+    - assets/scalers/
