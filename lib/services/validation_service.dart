@@ -9,8 +9,8 @@ class ValidationService {
     final errors = <ValidationError>[];
 
     // Age validation
-    if (input.ageYears < AcuteRiskModelConfig.validationRanges['AgeYears']!['min'] ||
-        input.ageYears > AcuteRiskModelConfig.validationRanges['AgeYears']!['max']) {
+    if (input.ageYears < AcuteRiskModelConfig.validationRanges['AgeYears']!['min']! ||
+        input.ageYears > AcuteRiskModelConfig.validationRanges['AgeYears']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Age',
         message: 'Age must be between 32-76 years',
@@ -19,8 +19,8 @@ class ValidationService {
     }
 
     // Resting Blood Pressure validation
-    if (input.restingBP_mmHg < AcuteRiskModelConfig.validationRanges['RestingBP_mmHg']!['min'] ||
-        input.restingBP_mmHg > AcuteRiskModelConfig.validationRanges['RestingBP_mmHg']!['max']) {
+    if (input.restingBP_mmHg < AcuteRiskModelConfig.validationRanges['RestingBP_mmHg']!['min']! ||
+        input.restingBP_mmHg > AcuteRiskModelConfig.validationRanges['RestingBP_mmHg']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Resting BP',
         message: 'Resting Blood Pressure must be between 80-200 mmHg',
@@ -33,7 +33,7 @@ class ValidationService {
 
     // Cholesterol validation
     if (input.cholesterol_mg_dL < 0 ||
-        input.cholesterol_mg_dL > AcuteRiskModelConfig.validationRanges['Cholesterol_mg_dL']!['max']) {
+        input.cholesterol_mg_dL > AcuteRiskModelConfig.validationRanges['Cholesterol_mg_dL']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Cholesterol',
         message: 'Cholesterol must be between 0-400 mg/dL (0 = missing/unknown)',
@@ -42,8 +42,8 @@ class ValidationService {
     }
 
     // Maximum Heart Rate validation
-    if (input.maxHR_bpm < AcuteRiskModelConfig.validationRanges['MaxHR_bpm']!['min'] ||
-        input.maxHR_bpm > AcuteRiskModelConfig.validationRanges['MaxHR_bpm']!['max']) {
+    if (input.maxHR_bpm < AcuteRiskModelConfig.validationRanges['MaxHR_bpm']!['min']! ||
+        input.maxHR_bpm > AcuteRiskModelConfig.validationRanges['MaxHR_bpm']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Max HR',
         message: 'Maximum Heart Rate must be between 60-202 bpm',
@@ -53,7 +53,7 @@ class ValidationService {
 
     // Oldpeak validation
     if (input.oldpeak < 0 ||
-        input.oldpeak > AcuteRiskModelConfig.validationRanges['Oldpeak']!['max']) {
+        input.oldpeak > AcuteRiskModelConfig.validationRanges['Oldpeak']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Oldpeak',
         message: 'Oldpeak must be between 0-6.2',
@@ -69,8 +69,8 @@ class ValidationService {
     final errors = <ValidationError>[];
 
     // Age validation
-    if (input.ageYears < ChronicRiskModelConfig.validationRanges['AgeYears']!['min'] ||
-        input.ageYears > ChronicRiskModelConfig.validationRanges['AgeYears']!['max']) {
+    if (input.ageYears < ChronicRiskModelConfig.validationRanges['AgeYears']!['min']! ||
+        input.ageYears > ChronicRiskModelConfig.validationRanges['AgeYears']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Age',
         message: 'Age must be between 41-72 years',
@@ -79,8 +79,8 @@ class ValidationService {
     }
 
     // Height validation
-    if (input.heightCm < ChronicRiskModelConfig.validationRanges['HeightCm']!['min'] ||
-        input.heightCm > ChronicRiskModelConfig.validationRanges['HeightCm']!['max']) {
+    if (input.heightCm < ChronicRiskModelConfig.validationRanges['HeightCm']!['min']! ||
+        input.heightCm > ChronicRiskModelConfig.validationRanges['HeightCm']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Height',
         message: 'Height must be between 157-200 cm',
@@ -89,8 +89,8 @@ class ValidationService {
     }
 
     // Weight validation
-    if (input.weightKg < ChronicRiskModelConfig.validationRanges['WeightKg']!['min'] ||
-        input.weightKg > ChronicRiskModelConfig.validationRanges['WeightKg']!['max']) {
+    if (input.weightKg < ChronicRiskModelConfig.validationRanges['WeightKg']!['min']! ||
+        input.weightKg > ChronicRiskModelConfig.validationRanges['WeightKg']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Weight',
         message: 'Weight must be between 59-103 kg',
@@ -99,8 +99,8 @@ class ValidationService {
     }
 
     // Systolic Blood Pressure validation
-    if (input.systolicBP_mmHg < ChronicRiskModelConfig.validationRanges['SystolicBP_mmHg']!['min'] ||
-        input.systolicBP_mmHg > ChronicRiskModelConfig.validationRanges['SystolicBP_mmHg']!['max']) {
+    if (input.systolicBP_mmHg < ChronicRiskModelConfig.validationRanges['SystolicBP_mmHg']!['min']! ||
+        input.systolicBP_mmHg > ChronicRiskModelConfig.validationRanges['SystolicBP_mmHg']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Systolic BP',
         message: 'Systolic Blood Pressure must be between 99-164 mmHg',
@@ -109,8 +109,8 @@ class ValidationService {
     }
 
     // Diastolic Blood Pressure validation
-    if (input.diastolicBP_mmHg < ChronicRiskModelConfig.validationRanges['DiastolicBP_mmHg']!['min'] ||
-        input.diastolicBP_mmHg > ChronicRiskModelConfig.validationRanges['DiastolicBP_mmHg']!['max']) {
+    if (input.diastolicBP_mmHg < ChronicRiskModelConfig.validationRanges['DiastolicBP_mmHg']!['min']! ||
+        input.diastolicBP_mmHg > ChronicRiskModelConfig.validationRanges['DiastolicBP_mmHg']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Diastolic BP',
         message: 'Diastolic Blood Pressure must be between 60-100 mmHg',
@@ -128,8 +128,8 @@ class ValidationService {
     }
 
     // Cholesterol validation
-    if (input.cholesterol_mg_dL < ChronicRiskModelConfig.validationRanges['Cholesterol_mg_dL']!['min'] ||
-        input.cholesterol_mg_dL > ChronicRiskModelConfig.validationRanges['Cholesterol_mg_dL']!['max']) {
+    if (input.cholesterol_mg_dL < ChronicRiskModelConfig.validationRanges['Cholesterol_mg_dL']!['min']! ||
+        input.cholesterol_mg_dL > ChronicRiskModelConfig.validationRanges['Cholesterol_mg_dL']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Cholesterol',
         message: 'Cholesterol must be between 148-284 mg/dL',
@@ -138,8 +138,8 @@ class ValidationService {
     }
 
     // Glucose validation
-    if (input.glucose_mg_dL < ChronicRiskModelConfig.validationRanges['Glucose_mg_dL']!['min'] ||
-        input.glucose_mg_dL > ChronicRiskModelConfig.validationRanges['Glucose_mg_dL']!['max']) {
+    if (input.glucose_mg_dL < ChronicRiskModelConfig.validationRanges['Glucose_mg_dL']!['min']! ||
+        input.glucose_mg_dL > ChronicRiskModelConfig.validationRanges['Glucose_mg_dL']!['max']!) {
       errors.add(ValidationError(
         fieldName: 'Glucose',
         message: 'Glucose must be between 76-147 mg/dL',
@@ -152,15 +152,15 @@ class ValidationService {
 
   /// Clip age to valid range for acute risk
   static int clipAcuteRiskAge(int age) {
-    final min = AcuteRiskModelConfig.validationRanges['AgeYears']!['min'] as int;
-    final max = AcuteRiskModelConfig.validationRanges['AgeYears']!['max'] as int;
+    final min = AcuteRiskModelConfig.validationRanges['AgeYears']!['min']! as int;
+    final max = AcuteRiskModelConfig.validationRanges['AgeYears']!['max']! as int;
     return age.clamp(min, max);
   }
 
   /// Clip age to valid range for chronic risk
   static int clipChronicRiskAge(int age) {
-    final min = ChronicRiskModelConfig.validationRanges['AgeYears']!['min'] as int;
-    final max = ChronicRiskModelConfig.validationRanges['AgeYears']!['max'] as int;
+    final min = ChronicRiskModelConfig.validationRanges['AgeYears']!['min']! as int;
+    final max = ChronicRiskModelConfig.validationRanges['AgeYears']!['max']! as int;
     return age.clamp(min, max);
   }
 
@@ -172,4 +172,5 @@ class ValidationService {
     return errors.isEmpty;
   }
 }
+
 

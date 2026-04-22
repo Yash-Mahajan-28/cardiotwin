@@ -1,217 +1,215 @@
 /// Result display screen for risk assessment
-
-}
-  }
-    );
-      ),
-        ),
-          ],
-            ),
-              ),
-                color: Colors.grey[600],
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              'Assessment Date: ${result.timestamp.toString().split('.')[0]}',
-            Text(
-            // Timestamp
-
-            const SizedBox(height: 24),
-            ),
-              ],
-                ),
-                  ),
-                    label: const Text('Close'),
-                    icon: const Icon(Icons.close),
-                    onPressed: onClose,
-                  child: OutlinedButton.icon(
-                  width: double.infinity,
-                SizedBox(
-                const SizedBox(height: 12),
-                ),
-                  ),
-                    label: const Text('Share Result'),
-                    icon: const Icon(Icons.share),
-                    onPressed: onShareResult,
-                  child: OutlinedButton.icon(
-                  width: double.infinity,
-                SizedBox(
-                const SizedBox(height: 12),
-                ),
-                  ),
-                    ),
-                      backgroundColor: const Color(0xFF1976D2),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    style: ElevatedButton.styleFrom(
-                    label: const Text('Save Assessment'),
-                    icon: const Icon(Icons.save),
-                    onPressed: onSaveAssessment,
-                  child: ElevatedButton.icon(
-                  width: double.infinity,
-                SizedBox(
-              children: [
-            Column(
-            // Action buttons
-
-            const SizedBox(height: 32),
-            ),
-              ),
-                ),
-                  ],
-                    ),
-                      ),
-                        ],
-                          ),
-                            ),
-                              height: 1.5,
-                              color: Colors.orange[900],
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            AppConstants.medicalDisclaimer,
-                          Text(
-                          const SizedBox(height: 8),
-                          ),
-                            ),
-                              color: Colors.orange[900],
-                              fontWeight: FontWeight.w600,
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            'Medical Disclaimer',
-                          Text(
-                        children: [
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      child: Column(
-                    Expanded(
-                    const SizedBox(width: 12),
-                    const Icon(Icons.warning_amber, color: Color(0xFFFF9800)),
-                  children: [
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                child: Row(
-                padding: const EdgeInsets.all(16),
-              child: Padding(
-              ),
-                side: const BorderSide(color: Color(0xFFFF9800), width: 1),
-                borderRadius: BorderRadius.circular(12),
-              shape: RoundedRectangleBorder(
-              color: const Color(0xFFFFF3E0),
-              elevation: 0,
-            Card(
-            // Medical disclaimer
-
-            const SizedBox(height: 24),
-            ),
-              ),
-                ),
-                  ],
-                    ),
-                      ),
-                        height: 1.6,
-                        color: Colors.grey[700],
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      _getDetailedRecommendation(),
-                    Text(
-                    const SizedBox(height: 12),
-                    ),
-                      ),
-                        fontWeight: FontWeight.w600,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      'Recommendation',
-                    Text(
-                  children: [
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                child: Column(
-                padding: const EdgeInsets.all(16),
-              child: Padding(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              elevation: 1,
-            Card(
-            // Detailed recommendation
-
-            const SizedBox(height: 24),
-            ),
-              ),
-                ),
-                  ],
-                    ),
-                      ),
-                        ],
-                          ),
-                            ),
-                              color: Colors.grey[700],
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            'AUC Score: ${result.modelAccuracy.toStringAsFixed(4)}',
-                          Text(
-                          const SizedBox(height: 4),
-                          ),
-                            ),
-                              fontWeight: FontWeight.w600,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            'Model Confidence',
-                          Text(
-                        children: [
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      child: Column(
-                    Expanded(
-                    const SizedBox(width: 12),
-                    const Icon(Icons.info_outline, color: Color(0xFF1976D2)),
-                  children: [
-                child: Row(
-                padding: const EdgeInsets.all(16),
-              child: Padding(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              elevation: 1,
-            Card(
-            // Model accuracy info
-
-            const SizedBox(height: 32),
-            ),
-              showLabel: true,
-              modelType: result.modelType,
-              riskPercentage: result.riskPercentage,
-            RiskGaugeWidget(
-            // Risk gauge
-          children: [
-        child: Column(
-        padding: const EdgeInsets.all(16),
-      body: SingleChildScrollView(
-      ),
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text('Risk Assessment Result'),
-      appBar: AppBar(
-    return Scaffold(
-  Widget build(BuildContext context) {
-  @override
-
-  }
-    }
-            'cardiologist for comprehensive evaluation and treatment planning.';
-        return 'Your risk level is high. Please seek immediate medical attention and consult with a '
-      case RiskCategory.HIGH:
-            'for further evaluation and personalized recommendations.';
-        return 'Your risk level is moderate. We recommend scheduling a consultation with a cardiologist '
-      case RiskCategory.MODERATE:
-            'balanced diet, and stress management. Regular health checkups are recommended.';
-        return 'Your risk level is low. Continue maintaining a healthy lifestyle with regular exercise, '
-      case RiskCategory.LOW:
-    switch (result.category) {
-  String _getDetailedRecommendation() {
-
-  }) : super(key: key);
-    this.onShareResult,
-    this.onSaveAssessment,
-    this.onClose,
-    required this.result,
-    Key? key,
-  const RiskResultScreen({
-
-  final VoidCallback? onShareResult;
-  final VoidCallback? onSaveAssessment;
-  final VoidCallback? onClose;
-  final RiskAssessmentResult result;
-class RiskResultScreen extends StatelessWidget {
-
-import '../constants/app_constants.dart';
-import '../widgets/risk_category_badge.dart';
-import '../widgets/risk_gauge_widget.dart';
-import '../models/risk_assessment_model.dart';
-import '../models/model_config.dart';
 import 'package:flutter/material.dart';
+import '../models/model_config.dart';
+import '../models/risk_assessment_model.dart';
+import '../widgets/risk_gauge_widget.dart';
+import '../widgets/risk_category_badge.dart';
+import '../constants/app_constants.dart';
 
+class RiskResultScreen extends StatelessWidget {
+  final RiskAssessmentResult result;
+  final VoidCallback? onClose;
+  final VoidCallback? onSaveAssessment;
+  final VoidCallback? onShareResult;
+
+  const RiskResultScreen({
+    Key? key,
+    required this.result,
+    this.onClose,
+    this.onSaveAssessment,
+    this.onShareResult,
+  }) : super(key: key);
+
+  String _getDetailedRecommendation() {
+    switch (result.category) {
+      case RiskCategory.LOW:
+        return 'Your risk level is low. Continue maintaining a healthy lifestyle with regular exercise, '
+            'balanced diet, and stress management. Regular health checkups are recommended.';
+      case RiskCategory.MODERATE:
+        return 'Your risk level is moderate. We recommend scheduling a consultation with a cardiologist '
+            'for further evaluation and personalized recommendations.';
+      case RiskCategory.HIGH:
+        return 'Your risk level is high. Please seek immediate medical attention and consult with a '
+            'cardiologist for comprehensive evaluation and treatment planning.';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Risk Assessment Result'),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Risk gauge
+            RiskGaugeWidget(
+              riskPercentage: result.riskPercentage,
+              modelType: result.modelType,
+              showLabel: true,
+            ),
+            const SizedBox(height: 32),
+
+            // Model accuracy info
+            Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.info_outline, color: Color(0xFF1976D2)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Model Confidence',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'AUC Score: ${result.modelAccuracy.toStringAsFixed(4)}',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Detailed recommendation
+            Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Recommendation',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _getDetailedRecommendation(),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[700],
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Medical disclaimer
+            Card(
+              elevation: 0,
+              color: const Color(0xFFFFF3E0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: const BorderSide(color: Color(0xFFFF9800), width: 1),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.warning_amber, color: Color(0xFFFF9800)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Medical Disclaimer',
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.orange[900],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            AppConstants.medicalDisclaimer,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.orange[900],
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            // Action buttons
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: onSaveAssessment,
+                    icon: const Icon(Icons.save),
+                    label: const Text('Save Assessment'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: const Color(0xFF1976D2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: onShareResult,
+                    icon: const Icon(Icons.share),
+                    label: const Text('Share Result'),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: onClose,
+                    icon: const Icon(Icons.close),
+                    label: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Timestamp
+            Text(
+              'Assessment Date: ${result.timestamp.toString().split('.')[0]}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

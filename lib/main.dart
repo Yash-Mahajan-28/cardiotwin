@@ -11,10 +11,14 @@ Future<void> main() async {
   // 2. Add this line to ensure the Flutter engine is ready
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 3. Add the Firebase initialization
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    // 3. Add the Firebase initialization
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint("Firebase initialization failed: $e");
+  }
 
   runApp(
     MultiProvider(

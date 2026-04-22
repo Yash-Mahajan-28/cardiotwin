@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/app_provider.dart';
 import '../../core/constants.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/input_field.dart';
@@ -14,8 +16,8 @@ class PatientRiskResultScreen extends StatelessWidget {
     // Get mode from arguments if not passed directly (for named routes)
     final bool effectiveDoctorMode = isDoctorMode || (ModalRoute.of(context)?.settings.arguments as bool? ?? false);
     
-    const double riskScore = 78.0;
-    const String riskLevel = 'High';
+    final double riskScore = context.watch<AppProvider>().riskScore;
+    final String riskLevel = context.watch<AppProvider>().riskLevel;
 
     return Scaffold(
       backgroundColor: AppColors.background,

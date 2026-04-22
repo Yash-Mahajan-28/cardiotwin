@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
+import '../../providers/app_provider.dart';
 import '../../core/constants.dart';
 import '../../core/app_router.dart';
 import '../../widgets/custom_button.dart';
@@ -10,7 +12,7 @@ class DoctorRiskResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double riskScore = 78.0;
+    final double riskScore = context.watch<AppProvider>().riskScore;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -30,7 +32,9 @@ class DoctorRiskResultScreen extends StatelessWidget {
             _buildSectionHeader('AI Analysis Summary'),
             const SizedBox(height: 8),
             Text(
-              'High probability of Coronary Artery Disease (78%). Significant ST depression (2.1mm) noted in Lead II. Recommendation: Immediate clinical consultation and further cardiac imaging.',
+              riskScore >= 70 ? 'High probability of Cardiac Risks (%). Critical attention required. Recommendation: Immediate clinical consultation and further cardiac imaging.' :
+              riskScore >= 40 ? 'Moderate probability of Cardiac Risks (%). Consider detailed evaluation. Recommendation: Schedule follow-up consultation.' :
+              'Low probability of Cardiac Risks (%). No significant abnormalities noted. Recommendation: Continue regular monitoring.',
               style: TextStyle(color: Colors.grey.shade700, height: 1.5),
             ),
             const SizedBox(height: 24),

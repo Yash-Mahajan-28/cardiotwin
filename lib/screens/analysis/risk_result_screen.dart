@@ -13,9 +13,9 @@ class RiskResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userRole = context.read<AppProvider>().userRole;
+    final userRole = context.watch<AppProvider>().userRole;
     final isDoctor = userRole == UserRole.doctor;
-    const double riskScore = 78.0;
+    final double riskScore = context.watch<AppProvider>().riskScore;
 
     return Scaffold(
       backgroundColor: AppColors.background,

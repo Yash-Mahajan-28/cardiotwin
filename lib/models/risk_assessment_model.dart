@@ -1,4 +1,5 @@
 /// Data classes for risk assessment models and results
+import 'model_config.dart';
 
 /// Acute Risk Assessment Input Data
 class AcuteRiskInput {

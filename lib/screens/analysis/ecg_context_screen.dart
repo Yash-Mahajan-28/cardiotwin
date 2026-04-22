@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants.dart';
 import '../../core/app_router.dart';
 import '../../widgets/custom_button.dart';
+import 'package:provider/provider.dart';
+import '../../providers/app_provider.dart';
 
 class ECGContextScreen extends StatefulWidget {
   const ECGContextScreen({super.key});
@@ -15,6 +17,7 @@ class _ECGContextScreenState extends State<ECGContextScreen> {
   String _restingECG = 'Normal';
   bool _exerciseAngina = false;
   String _stSlope = 'Upsloping';
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +77,15 @@ class _ECGContextScreenState extends State<ECGContextScreen> {
             const SizedBox(height: 40),
             CustomButton(
               text: 'Upload ECG & Analyze',
-              onPressed: () => Navigator.pushNamed(context, AppRoutes.analysisECGUpload),
+              onPressed: () {
+                context.read<AppProvider>().updateAnalysisData({
+                  'chestPainType': _chestPainType,
+                  'restingECG': _restingECG,
+                  'exerciseAngina': _exerciseAngina,
+                  'stSlope': _stSlope,
+                });
+                Navigator.pushNamed(context, AppRoutes.analysisECGUpload);
+              }
             ),
           ],
         ),

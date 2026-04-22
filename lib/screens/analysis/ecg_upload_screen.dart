@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../core/constants.dart';
 import '../../core/app_router.dart';
 import '../../widgets/custom_button.dart';
@@ -13,6 +14,25 @@ class ECGUploadScreen extends StatefulWidget {
 
 class _ECGUploadScreenState extends State<ECGUploadScreen> {
   bool _isFileUploaded = false;
+  String _uploadedFileName = '';
+
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['csv'],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          _isFileUploaded = true;
+          _uploadedFileName = result.files.single.name;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error picking file: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +84,7 @@ class _ECGUploadScreenState extends State<ECGUploadScreen> {
 
   Widget _buildUploadArea() {
     return InkWell(
-      onTap: () => setState(() => _isFileUploaded = true),
+      onTap: _pickFile,
       borderRadius: BorderRadius.circular(AppRadius.r16),
       child: Container(
         width: double.infinity,
@@ -92,7 +112,7 @@ class _ECGUploadScreenState extends State<ECGUploadScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              _isFileUploaded ? 'ecg_record_102.csv' : 'CSV, EDF or JSON format for high-precision CardioTwin AI analysis.',
+              _isFileUploaded ? _uploadedFileName : 'CSV, EDF or JSON format for high-precision CardioTwin AI analysis.',
               textAlign: TextAlign.center,
               style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
@@ -100,7 +120,7 @@ class _ECGUploadScreenState extends State<ECGUploadScreen> {
             if (!_isFileUploaded)
               CustomOutlineButton(
                 text: 'Select File from Device',
-                onPressed: () => setState(() => _isFileUploaded = true),
+                onPressed: _pickFile,
                 color: AppColors.primary,
               ),
           ],

@@ -19,6 +19,9 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
   bool _isSmoker = false;
   bool _consumesAlcohol = false;
   bool _isPhysicallyActive = true;
+  final TextEditingController _ageCtrl = TextEditingController(text: '45');
+  final TextEditingController _heightCtrl = TextEditingController(text: '175');
+  final TextEditingController _weightCtrl = TextEditingController(text: '70');
 
   @override
   Widget build(BuildContext context) {
@@ -42,16 +45,18 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
               ),
               const SizedBox(height: 24),
             ],
-            const CustomInputField(
+            CustomInputField(
+              controller: _ageCtrl,
               labelText: 'Age',
               hintText: 'e.g. 35',
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
-            const Row(
+            Row(
               children: [
                 Expanded(
                   child: CustomInputField(
+                    controller: _heightCtrl,
                     labelText: 'Height (cm)',
                     hintText: '175',
                     keyboardType: TextInputType.number,
@@ -60,6 +65,7 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
                 SizedBox(width: 16),
                 Expanded(
                   child: CustomInputField(
+                    controller: _weightCtrl,
                     labelText: 'Weight (kg)',
                     hintText: '70',
                     keyboardType: TextInputType.number,
@@ -109,7 +115,18 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
             const SizedBox(height: 40),
             CustomButton(
               text: 'Next Step',
-              onPressed: () => Navigator.pushNamed(context, AppRoutes.analysisClinical),
+              onPressed: () {
+                context.read<AppProvider>().updateAnalysisData({
+                  'age': int.tryParse(_ageCtrl.text) ?? 45,
+                  'height': double.tryParse(_heightCtrl.text) ?? 175.0,
+                  'weight': double.tryParse(_weightCtrl.text) ?? 70.0,
+                  'gender': _gender,
+                  'physicallyActive': _isPhysicallyActive,
+                  'smoker': _isSmoker,
+                  'alcohol': _consumesAlcohol,
+                });
+                Navigator.pushNamed(context, AppRoutes.analysisClinical);
+              }
             ),
           ],
         ),
