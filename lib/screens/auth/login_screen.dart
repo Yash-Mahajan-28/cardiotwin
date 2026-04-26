@@ -4,6 +4,9 @@ import '../../core/app_router.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/input_field.dart';
 import '../../services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../../models/user_model.dart';
+import '../../providers/app_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   final String role; // 'patient' or 'doctor'
@@ -30,14 +33,33 @@ class _LoginScreenState extends State<LoginScreen> {
           _passwordController.text,
         );
         if (user != null && mounted) {
-          if (widget.role == 'doctor') {
-            Navigator.pushReplacementNamed(context, AppRoutes.doctorDashboard);
-          } else {
-            Navigator.pushReplacementNamed(context, AppRoutes.patientDashboard);
+          final profileDoc = await _authService.getUserProfile(user.uid);
+          if (profileDoc != null && profileDoc.exists && mounted) {
+            final userModel = UserModel.fromMap(
+              profileDoc.data() as Map<String, dynamic>,
+              user.uid,
+            );
+            context.read<AppProvider>().setUser(userModel);
+          }
+
+          if (mounted) {
+            if (widget.role == 'doctor') {
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.doctorDashboard,
+              );
+            } else {
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.patientDashboard,
+              );
+            }
           }
         } else if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login failed. Please check your credentials.')),
+            const SnackBar(
+              content: Text('Login failed. Please check your credentials.'),
+            ),
           );
         }
       } catch (e) {
@@ -57,21 +79,34 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithGoogle(role: widget.role);
       if (user != null && mounted) {
-        if (widget.role == 'doctor') {
-          Navigator.pushReplacementNamed(context, AppRoutes.doctorDashboard);
-        } else {
-          Navigator.pushReplacementNamed(context, AppRoutes.patientDashboard);
+        final profileDoc = await _authService.getUserProfile(user.uid);
+        if (profileDoc != null && profileDoc.exists && mounted) {
+          final userModel = UserModel.fromMap(
+            profileDoc.data() as Map<String, dynamic>,
+            user.uid,
+          );
+          context.read<AppProvider>().setUser(userModel);
+        }
+
+        if (mounted) {
+          if (widget.role == 'doctor') {
+            Navigator.pushReplacementNamed(context, AppRoutes.doctorDashboard);
+          } else {
+            Navigator.pushReplacementNamed(context, AppRoutes.patientDashboard);
+          }
         }
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Google sign-in failed. Please try again.')),
+          const SnackBar(
+            content: Text('Google sign-in failed. Please try again.'),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -112,8 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: 'Enter your email',
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                    value != null && value.contains('@') ? null : 'Enter a valid email',
+                validator: (value) => value != null && value.contains('@')
+                    ? null
+                    : 'Enter a valid email',
               ),
               const SizedBox(height: 20),
               CustomInputField(
@@ -121,8 +157,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: 'Enter your password',
                 isPassword: true,
                 controller: _passwordController,
-                validator: (value) =>
-                    value != null && value.length >= 6 ? null : 'Min 6 characters',
+                validator: (value) => value != null && value.length >= 6
+                    ? null
+                    : 'Min 6 characters',
               ),
               Align(
                 alignment: Alignment.centerRight,
@@ -143,7 +180,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(child: Divider()),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('OR', style: TextStyle(color: AppColors.textSecondary)),
+                    child: Text(
+                      'OR',
+                      style: TextStyle(color: AppColors.textSecondary),
+                    ),
                   ),
                   Expanded(child: Divider()),
                 ],

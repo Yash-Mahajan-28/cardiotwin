@@ -4,6 +4,9 @@ import '../../core/app_router.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/input_field.dart';
 import '../../services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../../models/user_model.dart';
+import '../../providers/app_provider.dart';
 
 class PatientRegisterScreen extends StatefulWidget {
   const PatientRegisterScreen({super.key});
@@ -46,6 +49,14 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
         );
 
         if (user != null && mounted) {
+          final userModel = UserModel(
+            id: user.uid,
+            name: _nameController.text,
+            email: _emailController.text,
+            role: UserRole.patient,
+          );
+          context.read<AppProvider>().setUser(userModel);
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Registration successful!')),
           );

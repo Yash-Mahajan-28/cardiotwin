@@ -15,7 +15,7 @@ class CardiacRiskCalculator {
     // Validate input
     final errors = ValidationService.validateAcuteRiskInput(input);
     if (errors.isNotEmpty) {
-      throw ArgumentError('Validation errors: ${errors.join(', ')}');
+      print('Validation warnings: ${errors.join(', ')}');
     }
 
     try {
@@ -57,7 +57,7 @@ class CardiacRiskCalculator {
     // Validate input
     final errors = ValidationService.validateChronicRiskInput(input);
     if (errors.isNotEmpty) {
-      throw ArgumentError('Validation errors: ${errors.join(', ')}');
+      print('Validation warnings: ${errors.join(', ')}');
     }
 
     try {

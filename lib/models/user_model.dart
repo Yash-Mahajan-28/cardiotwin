@@ -28,7 +28,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map, String id) {
     return UserModel(
       id: id,
-      name: map['name'] ?? '',
+      name: map['fullName'] ?? map['name'] ?? '',
       email: map['email'] ?? '',
       role: map['role'] == 'doctor' ? UserRole.doctor : UserRole.patient,
       profileImageUrl: map['profileImageUrl'],

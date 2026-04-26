@@ -10,6 +10,7 @@ class CustomInputField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
 
   const CustomInputField({
     super.key,
@@ -21,6 +22,7 @@ class CustomInputField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.validator,
+    this.onChanged,
   });
 
   @override
@@ -42,6 +44,7 @@ class CustomInputField extends StatelessWidget {
           keyboardType: keyboardType,
           obscureText: isPassword,
           validator: validator,
+          onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: prefixIcon,

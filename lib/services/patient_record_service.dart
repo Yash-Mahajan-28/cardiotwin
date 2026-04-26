@@ -11,7 +11,10 @@ class PatientRecordService {
 
   /// Ensure we are saving for a specific patient.
   /// If patientId is null, falls back to the current authenticated user's ID.
-  Future<void> savePatientProfile(PatientProfile profile, {String? patientId}) async {
+  Future<void> savePatientProfile(
+    PatientProfile profile, {
+    String? patientId,
+  }) async {
     final uid = patientId ?? _currentUserId;
     if (uid == null) throw Exception('No user authenticated');
 
@@ -27,12 +30,19 @@ class PatientRecordService {
   }
 
   /// Store clinical measurement evaluation
-  Future<void> saveClinicalMeasurement(ClinicalData clinicalData, {String? patientId, String? recordId}) async {
+  Future<void> saveClinicalMeasurement(
+    ClinicalData clinicalData, {
+    String? patientId,
+    String? recordId,
+  }) async {
     final uid = patientId ?? _currentUserId;
     if (uid == null) throw Exception('No user authenticated');
 
     try {
-      final collection = _firestore.collection('users').doc(uid).collection('clinical_records');
+      final collection = _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('clinical_records');
       final data = {
         'clinical_data': clinicalData.toMap(),
         'timestamp': FieldValue.serverTimestamp(),
@@ -44,7 +54,11 @@ class PatientRecordService {
         await collection.add(data);
       }
     } catch (e, st) {
-      developer.log('Error saving clinical measurement', error: e, stackTrace: st);
+      developer.log(
+        'Error saving clinical measurement',
+        error: e,
+        stackTrace: st,
+      );
       rethrow;
     }
   }
@@ -67,7 +81,11 @@ class PatientRecordService {
         'timestamp': FieldValue.serverTimestamp(),
       };
 
-      await _firestore.collection('users').doc(uid).collection('assessments').add(data);
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('assessments')
+          .add(data);
     } catch (e, st) {
       developer.log('Error saving full assessment', error: e, stackTrace: st);
       rethrow;
@@ -87,10 +105,7 @@ class PatientRecordService {
           .orderBy('timestamp', descending: true)
           .get();
 
-      return snapshot.docs.map((doc) => {
-        'id': doc.id,
-        ...doc.data()
-      }).toList();
+      return snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
     } catch (e, st) {
       developer.log('Error getting assessments', error: e, stackTrace: st);
       return [];

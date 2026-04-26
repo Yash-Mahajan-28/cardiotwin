@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants.dart';
 import '../../core/app_router.dart';
 import '../../widgets/input_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReportsDatabaseScreen extends StatefulWidget {
   const ReportsDatabaseScreen({super.key});
@@ -11,27 +12,157 @@ class ReportsDatabaseScreen extends StatefulWidget {
 }
 
 class _ReportsDatabaseScreenState extends State<ReportsDatabaseScreen> {
-  String _selectedFilter = 'Risk: High';
+  String _selectedFilter = 'All';
+  String _searchQuery = '';
 
-  final List<String> _filters = ['Risk: High', 'Risk: Moderate', 'Recent', 'Pending'];
+  final List<String> _filters = [
+    'All',
+    'Risk: High',
+    'Risk: Moderate',
+    'Recent',
+    'Pending',
+  ];
+
+  final List<Map<String, dynamic>> _allReports = [
+    {
+      'id': 'ID-100',
+      'name': 'John Doe',
+      'age': 54,
+      'gender': 'Male',
+      'date': 'Oct 24, 2023',
+      'status': 'PENDING VERIFICATION',
+      'acuteRisk': Colors.red,
+      'chronicRisk': Colors.orange,
+    },
+    {
+      'id': 'ID-101',
+      'name': 'Sarah Jenkins',
+      'age': 62,
+      'gender': 'Female',
+      'date': 'Oct 24, 2023',
+      'status': 'VERIFIED',
+      'acuteRisk': Colors.orange,
+      'chronicRisk': Colors.green,
+    },
+    {
+      'id': 'ID-102',
+      'name': 'Michael Smith',
+      'age': 45,
+      'gender': 'Male',
+      'date': 'Oct 25, 2023',
+      'status': 'PENDING VERIFICATION',
+      'acuteRisk': Colors.red,
+      'chronicRisk': Colors.red,
+    },
+    {
+      'id': 'ID-103',
+      'name': 'Emily Davis',
+      'age': 38,
+      'gender': 'Female',
+      'date': 'Oct 26, 2023',
+      'status': 'VERIFIED',
+      'acuteRisk': Colors.green,
+      'chronicRisk': Colors.green,
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPatientsFromFirestore();
+  }
+
+  Future<void> _fetchPatientsFromFirestore() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'patient')
+          .get();
+
+      final List<Map<String, dynamic>> firestoreReports = snapshot.docs.map((
+        doc,
+      ) {
+        final data = doc.data();
+        final profile = data['profile'] as Map<String, dynamic>?;
+
+        final name = data['fullName'] ?? 'Unknown Patient';
+        final age = profile != null ? profile['age'] ?? 0 : 0;
+        final gender = profile != null
+            ? profile['gender'] ?? 'Unknown'
+            : 'Unknown';
+
+        return {
+          'id': doc.id.length > 6
+              ? doc.id.substring(0, 6).toUpperCase()
+              : doc.id,
+          'name': name,
+          'age': age,
+          'gender': gender,
+          'date': 'Today',
+          'status': 'PENDING VERIFICATION',
+          'acuteRisk': Colors.orange,
+          'chronicRisk': Colors.orange,
+        };
+      }).toList();
+
+      if (mounted) {
+        setState(() {
+          _allReports.addAll(firestoreReports);
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching patients: $e');
+    }
+  }
+
+  List<Map<String, dynamic>> get _filteredReports {
+    return _allReports.where((report) {
+      final matchesSearch =
+          report['name'].toString().toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ) ||
+          report['id'].toString().toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          );
+
+      if (!matchesSearch) return false;
+
+      if (_selectedFilter == 'All') return true;
+      if (_selectedFilter == 'Risk: High') {
+        return report['acuteRisk'] == Colors.red ||
+            report['chronicRisk'] == Colors.red;
+      }
+      if (_selectedFilter == 'Risk: Moderate') {
+        return report['acuteRisk'] == Colors.orange ||
+            report['chronicRisk'] == Colors.orange;
+      }
+      if (_selectedFilter == 'Pending') {
+        return report['status'] == 'PENDING VERIFICATION';
+      }
+      return true;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Patient Reports Database'),
-      ),
+      appBar: AppBar(title: const Text('Patient Reports Database')),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(AppPadding.p16),
             child: Column(
               children: [
-                const CustomInputField(
+                CustomInputField(
                   labelText: '',
                   hintText: 'Search by name or ID...',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
                 SingleChildScrollView(
@@ -44,10 +175,13 @@ class _ReportsDatabaseScreenState extends State<ReportsDatabaseScreen> {
                         child: ChoiceChip(
                           label: Text(filter),
                           selected: isSelected,
-                          onSelected: (val) => setState(() => _selectedFilter = filter),
+                          onSelected: (val) =>
+                              setState(() => _selectedFilter = filter),
                           selectedColor: AppColors.primary,
                           labelStyle: TextStyle(
-                            color: isSelected ? Colors.white : AppColors.textPrimary,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -61,17 +195,18 @@ class _ReportsDatabaseScreenState extends State<ReportsDatabaseScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-              itemCount: 4,
+              itemCount: _filteredReports.length,
               itemBuilder: (context, index) {
+                final report = _filteredReports[index];
                 return _buildReportCard(
-                  id: 'ID-${100 + index}',
-                  name: index % 2 == 0 ? 'John Doe' : 'Sarah Jenkins',
-                  age: index % 2 == 0 ? 54 : 62,
-                  gender: index % 2 == 0 ? 'Male' : 'Female',
-                  date: 'Oct 24, 2023',
-                  status: index % 2 == 0 ? 'PENDING VERIFICATION' : 'VERIFIED',
-                  acuteRisk: index % 2 == 0 ? Colors.red : Colors.orange,
-                  chronicRisk: index % 2 == 0 ? Colors.orange : Colors.green,
+                  id: report['id'],
+                  name: report['name'],
+                  age: report['age'],
+                  gender: report['gender'],
+                  date: report['date'],
+                  status: report['status'],
+                  acuteRisk: report['acuteRisk'],
+                  chronicRisk: report['chronicRisk'],
                 );
               },
             ),
@@ -112,11 +247,23 @@ class _ReportsDatabaseScreenState extends State<ReportsDatabaseScreen> {
                 ),
                 Row(
                   children: [
-                    const Text('ACUTE', style: TextStyle(fontSize: 10, color: AppColors.textSecondary)),
+                    const Text(
+                      'ACUTE',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     const SizedBox(width: 4),
                     CircleAvatar(radius: 4, backgroundColor: acuteRisk),
                     const SizedBox(width: 8),
-                    const Text('CHRONIC', style: TextStyle(fontSize: 10, color: AppColors.textSecondary)),
+                    const Text(
+                      'CHRONIC',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                     const SizedBox(width: 4),
                     CircleAvatar(radius: 4, backgroundColor: chronicRisk),
                   ],
@@ -129,13 +276,23 @@ class _ReportsDatabaseScreenState extends State<ReportsDatabaseScreen> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            Text('Report Date: $date', style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+            Text(
+              'Report Date: $date',
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, AppRoutes.reportDetail, arguments: id),
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.reportDetail,
+                      arguments: id,
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary.withOpacity(0.1),
                       foregroundColor: AppColors.primary,
@@ -152,7 +309,10 @@ class _ReportsDatabaseScreenState extends State<ReportsDatabaseScreen> {
                       minimumSize: const Size(0, 44),
                       side: BorderSide(color: Colors.grey.shade300),
                     ),
-                    child: const Text('Edit Notes', style: TextStyle(color: AppColors.textPrimary)),
+                    child: const Text(
+                      'Edit Notes',
+                      style: TextStyle(color: AppColors.textPrimary),
+                    ),
                   ),
                 ),
               ],

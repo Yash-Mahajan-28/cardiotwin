@@ -9,6 +9,7 @@ import '../screens/doctor/doctor_dashboard.dart';
 import '../screens/doctor/reports_database_screen.dart';
 import '../screens/common/settings_screen.dart';
 import '../screens/common/loading_screen.dart';
+import '../screens/common/main_navigation_screen.dart';
 import '../screens/patient/ecg_waveform_screen.dart';
 import '../screens/patient/ai_insights_screen.dart';
 
@@ -58,9 +59,8 @@ class AppRoutes {
       case doctorRegister:
         return MaterialPageRoute(builder: (_) => const DoctorRegisterScreen());
       case patientDashboard:
-        return MaterialPageRoute(builder: (_) => const PatientDashboard());
       case doctorDashboard:
-        return MaterialPageRoute(builder: (_) => const DoctorDashboard());
+        return MaterialPageRoute(builder: (_) => const MainNavigationScreen());
       case analysisPatientInfo:
         return MaterialPageRoute(builder: (_) => const PatientInfoScreen());
       case analysisClinical:
