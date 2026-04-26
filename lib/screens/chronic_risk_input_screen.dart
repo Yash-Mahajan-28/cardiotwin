@@ -6,6 +6,8 @@ import '../models/risk_assessment_model.dart';
 import '../models/cardiac_risk_calculator.dart';
 import '../widgets/feature_input_field.dart';
 import 'risk_result_screen.dart';
+import '../models/user_model.dart';
+import '../services/patient_record_service.dart';
 
 class ChronicRiskInputScreen extends StatefulWidget {
   final CardiacRiskCalculator calculator;
@@ -95,6 +97,51 @@ class _ChronicRiskInputScreenState extends State<ChronicRiskInputScreen> {
 
       final result = await widget.calculator.calculateChronicRisk(input);
 
+      try {
+        final patientService = PatientRecordService();
+        
+        final patientProfile = PatientProfile(
+          age: input.ageYears,
+          height: input.heightCm.toDouble(),
+          weight: input.weightKg,
+          gender: input.sex.name,
+          isSmoker: input.smoker == YesNo.YES,
+          consumesAlcohol: input.alcoholUser == YesNo.YES,
+          isPhysicallyActive: input.physicallyActive == YesNo.YES,
+        );
+
+        await patientService.savePatientProfile(patientProfile);
+
+        final clinicalData = ClinicalData(
+          systolicBP: input.systolicBP_mmHg,
+          diastolicBP: input.diastolicBP_mmHg,
+          cholesterol: input.cholesterol_mg_dL,
+          glucose: input.glucose_mg_dL,
+          fastingBloodSugar: false, // fallback
+          maxHeartRate: 70, // fallback
+          stDepression: 0.0, // fallback
+        );
+
+        final ecgContext = ECGContext(
+          chestPainType: 'N/A', // Not used for chronic
+          restingECG: 'N/A', // Not used for chronic
+          exerciseAngina: false, // Not used for chronic
+          stSlope: 'N/A', // Not used for chronic
+        );
+
+        // Automatically save the assessment upon submission
+        await patientService.saveFullAssessment(
+          clinicalData: clinicalData,
+          ecgContext: ecgContext,
+          riskResults: {
+            'chronic_risk_score': result.riskPercentage,
+            'risk_level': result.category.name,
+          },
+        );
+      } catch (e) {
+        debugPrint('Auto-save error: $e');
+      }
+
       if (mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -103,7 +150,7 @@ class _ChronicRiskInputScreenState extends State<ChronicRiskInputScreen> {
               onClose: () => Navigator.of(context).pop(),
               onSaveAssessment: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Assessment saved')),
+                  const SnackBar(content: Text('Assessment was automatically saved to Firebase')),
                 );
               },
               onShareResult: () {

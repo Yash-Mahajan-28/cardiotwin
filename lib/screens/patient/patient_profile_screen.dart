@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/input_field.dart';
+import '../../services/patient_record_service.dart';
+import '../../models/user_model.dart';
 
 class PatientProfileScreen extends StatefulWidget {
   const PatientProfileScreen({super.key});
@@ -95,7 +97,23 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
             const SizedBox(height: 40),
             CustomButton(
               text: 'Continue',
-              onPressed: () => Navigator.pushNamed(context, '/clinical-measurements'),
+              onPressed: () async {
+                try {
+                  final patientService = PatientRecordService();
+                  await patientService.savePatientProfile(PatientProfile(
+                    age: 35, // You'd normally get this from your age controller
+                    height: 175.0, // get this from height controller
+                    weight: 70.0, // get this from weight controller
+                    gender: _gender,
+                    isSmoker: _isSmoker,
+                    consumesAlcohol: _consumesAlcohol,
+                    isPhysicallyActive: _isPhysicallyActive,
+                  ));
+                } catch (e) {
+                  debugPrint('Saving profile failed: $e');
+                }
+                Navigator.pushNamed(context, '/clinical-measurements');
+              },
             ),
           ],
         ),

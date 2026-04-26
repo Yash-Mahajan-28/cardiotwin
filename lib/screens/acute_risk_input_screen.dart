@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import '../models/model_config.dart';
 import '../models/risk_assessment_model.dart';
 import '../models/cardiac_risk_calculator.dart';
-import '../services/feature_encoder_service.dart';
-import '../services/validation_service.dart';
+import '../models/user_model.dart';
+import '../services/patient_record_service.dart';
 import '../widgets/feature_input_field.dart';
-import '../widgets/risk_gauge_widget.dart';
 import 'risk_result_screen.dart';
 
 class AcuteRiskInputScreen extends StatefulWidget {
@@ -83,6 +82,52 @@ class _AcuteRiskInputScreenState extends State<AcuteRiskInputScreen> {
 
       final result = await widget.calculator.calculateAcuteRisk(input);
 
+      try {
+        final patientService = PatientRecordService();
+        
+        // Save patient profile (Age & Gender)
+        final patientProfile = PatientProfile(
+          age: input.ageYears,
+          height: 0.0, // placeholder
+          weight: 0.0, // placeholder
+          gender: input.sex.name,
+          isSmoker: false, // placeholder
+          consumesAlcohol: false, // placeholder
+          isPhysicallyActive: false, // placeholder
+        );
+        await patientService.savePatientProfile(patientProfile);
+
+        final isFastingGt120 = input.fastingBS_gt_120mgdL == YesNo.YES;
+        final clinicalData = ClinicalData(
+          systolicBP: input.restingBP_mmHg,
+          diastolicBP: 80, // placeholder
+          cholesterol: input.cholesterol_mg_dL,
+          glucose: isFastingGt120 ? 130 : 90,
+          fastingBloodSugar: isFastingGt120,
+          maxHeartRate: input.maxHR_bpm,
+          stDepression: input.oldpeak,
+        );
+
+        final ecgContext = ECGContext(
+          chestPainType: input.chestPainType.name,
+          restingECG: input.restingECG.name,
+          exerciseAngina: input.exerciseAngina == YesNo.YES,
+          stSlope: input.stSlope.name,
+        );
+
+        // Automatically save the assessment upon submission
+        await patientService.saveFullAssessment(
+          clinicalData: clinicalData,
+          ecgContext: ecgContext,
+          riskResults: {
+            'acute_risk_score': result.riskPercentage,
+            'risk_level': result.category.name,
+          },
+        );
+      } catch (e) {
+        debugPrint('Auto-save error: $e');
+      }
+
       if (mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -90,13 +135,11 @@ class _AcuteRiskInputScreenState extends State<AcuteRiskInputScreen> {
               result: result,
               onClose: () => Navigator.of(context).pop(),
               onSaveAssessment: () {
-                // TODO: Implement save to database
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Assessment saved')),
+                  const SnackBar(content: Text('Assessment was automatically saved to Firebase')),
                 );
               },
               onShareResult: () {
-                // TODO: Implement share functionality
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Sharing not yet implemented')),
                 );

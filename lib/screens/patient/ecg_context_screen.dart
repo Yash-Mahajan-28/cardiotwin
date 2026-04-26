@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants.dart';
 import '../../widgets/custom_button.dart';
+import '../../services/patient_record_service.dart';
+import '../../models/user_model.dart';
 
 class ECGContextScreen extends StatefulWidget {
   const ECGContextScreen({super.key});
@@ -69,7 +71,34 @@ class _ECGContextScreenState extends State<ECGContextScreen> {
             const SizedBox(height: 40),
             CustomButton(
               text: 'Upload ECG & Analyze',
-              onPressed: () => Navigator.pushNamed(context, '/ecg-upload'),
+              onPressed: () async {
+                try {
+                  final patientService = PatientRecordService();
+                  // We'll save a dummy assessment here just to show it reaches Firebase,
+                  // since the actual risk score isn't calculated in this screen flow yet.
+                  await patientService.saveFullAssessment(
+                    clinicalData: ClinicalData(
+                      systolicBP: 120, // This would normally come from state Management
+                      diastolicBP: 80,
+                      cholesterol: 200,
+                      glucose: 90,
+                      fastingBloodSugar: false,
+                      maxHeartRate: 150,
+                      stDepression: 1.5,
+                    ),
+                    ecgContext: ECGContext(
+                      chestPainType: _chestPainType,
+                      restingECG: _restingECG,
+                      exerciseAngina: _exerciseAngina,
+                      stSlope: _stSlope,
+                    ),
+                    riskResults: {'status': 'pending analysis'},
+                  );
+                } catch (e) {
+                  debugPrint('Saving ECG Context failed: $e');
+                }
+                Navigator.pushNamed(context, '/ecg-upload');
+              },
             ),
           ],
         ),

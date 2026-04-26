@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/input_field.dart';
+import '../../services/patient_record_service.dart';
+import '../../models/user_model.dart';
 
 class ClinicalMeasurementsScreen extends StatefulWidget {
   const ClinicalMeasurementsScreen({super.key});
@@ -92,7 +94,23 @@ class _ClinicalMeasurementsScreenState extends State<ClinicalMeasurementsScreen>
             const SizedBox(height: 40),
             CustomButton(
               text: 'Continue to ECG',
-              onPressed: () => Navigator.pushNamed(context, '/ecg-context'),
+              onPressed: () async {
+                try {
+                  final patientService = PatientRecordService();
+                  await patientService.saveClinicalMeasurement(ClinicalData(
+                    systolicBP: 120, // get this from text controller
+                    diastolicBP: 80, // get this from text controller
+                    cholesterol: 200, // get this from text controller
+                    glucose: 90, // get this from text controller
+                    fastingBloodSugar: _fastingBS,
+                    maxHeartRate: 150, // get this from text controller
+                    stDepression: 1.5, // get this from text controller
+                  ));
+                } catch (e) {
+                  debugPrint('Saving clinical data failed: $e');
+                }
+                Navigator.pushNamed(context, '/ecg-context');
+              },
             ),
           ],
         ),

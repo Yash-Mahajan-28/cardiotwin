@@ -6,6 +6,8 @@ import '../../models/cardiac_risk_calculator.dart';
 import '../../models/risk_assessment_model.dart';
 import '../../models/model_config.dart';
 import '../../core/app_router.dart';
+import '../../services/patient_record_service.dart';
+import '../../models/user_model.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -105,6 +107,50 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
         'acute_risk': acuteResult.riskPercentage,
         'chronic_risk': chronicResult.riskPercentage,
       });
+
+      // Save accumulated data to Firebase
+      try {
+        final patientService = PatientRecordService();
+        
+        final profile = PatientProfile(
+          age: age,
+          height: height,
+          weight: weight,
+          gender: data['gender']?.toString() ?? 'Male',
+          isSmoker: data['smoker'] == true,
+          consumesAlcohol: data['alcohol'] == true,
+          isPhysicallyActive: data['physicallyActive'] == true,
+        );
+
+        final clinicalData = ClinicalData(
+          systolicBP: sys.toInt(),
+          diastolicBP: dia.toInt(),
+          cholesterol: chol.toInt(),
+          glucose: gluc.toInt(),
+          fastingBloodSugar: data['fastingBS'] == true,
+          maxHeartRate: maxHr.toInt(),
+          stDepression: oldpeak,
+        );
+
+        final ecgContext = ECGContext(
+          chestPainType: data['chestPainType']?.toString() ?? 'Asymptomatic',
+          restingECG: data['restingECG']?.toString() ?? 'Normal',
+          exerciseAngina: data['exerciseAngina'] == true,
+          stSlope: data['stSlope']?.toString() ?? 'Flat',
+        );
+
+        await patientService.savePatientProfile(profile);
+        await patientService.saveFullAssessment(
+          clinicalData: clinicalData,
+          ecgContext: ecgContext,
+          riskResults: {
+            'acute_risk': acuteResult.riskPercentage,
+            'chronic_risk': chronicResult.riskPercentage,
+          },
+        );
+      } catch (e) {
+        debugPrint("Error saving assessment to Firebase: $e");
+      }
 
     } catch (e) {
       debugPrint("Error during ML calculation: $e");
